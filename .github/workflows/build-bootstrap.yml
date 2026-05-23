@@ -1,0 +1,28 @@
+name: Build Bootstrap.tipa
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Theos with roothide support
+        run: bash -c "$(curl -fsSL https://raw.githubusercontent.com/roothide/theos/master/bin/install-theos)"
+
+      - name: Build Bootstrap.tipa
+        run: |
+          export THEOS="$HOME/theos"
+          make package
+
+      - name: Upload Bootstrap.tipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bootstrap-tipa
+          path: packages/*.tipa
